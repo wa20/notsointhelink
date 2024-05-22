@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useUser } from '@clerk/nextjs'
 import { Button } from './ui/button';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, XIcon } from 'lucide-react';
 
 function PostForm() {
     const [preview, setPreview] = useState<string | null>(null)
@@ -54,14 +54,25 @@ function PostForm() {
                         Post
                     </button>
                 </div>
-                {/* TODO Preview will be a conditional check*/}  
 
-                <div>
+                {preview && (
+                    <div className="mt-2">
+                        <img src={preview} alt="Preview" className="w-full object-cover" />
+                    </div>
+                )}
+
+                <div className='flex justify-end mt-2 space-x-2'>
                     <Button type="button" onClick={() => fileInputRef.current?.click()}>
                         <ImageIcon className='mr-2' size={16} color='currentColor' />
-                        Add
+                        {preview ? 'Change' : 'Add'} Image
                     </Button>
-                    {/* TODO add a remove preview button */}
+
+                     {preview && (
+                        <Button variant="outline" type="button" onClick={() => setPreview(null)}>
+                            <XIcon className='mr-2' size={16} color='currentColor' />
+                            Remove Image
+                        </Button>
+                     )}
                 </div>
             </form>
 
