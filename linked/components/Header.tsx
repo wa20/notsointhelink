@@ -1,81 +1,70 @@
-import React from 'react'
-import Image from 'next/image'
-import { Briefcase, HomeIcon, MessagesSquare, SearchIcon, UsersIcon } from 'lucide-react'
-import Link from 'next/link'
-import { 
-    SignInButton,
-    SignedIn,
-    SignedOut,
-    UserButton 
-} from "@clerk/nextjs";
-import { Button } from './ui/button'
+import React from "react";
+import Image from "next/image";
+import {
+    Briefcase,
+    HomeIcon,
+    MessagesSquare,
+    SearchIcon,
+    UsersIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Button } from "./ui/button";
 
 function Header() {
     return (
         <div className="flex items-center justify-between p-2 max-w-6xl mx-auto">
             <Image
-                className='rounded-lg'
+                className="rounded-lg"
                 src="https://links.papareact.com/b3z"
                 width={40}
                 height={40}
                 alt="logo"
             />
 
-            <div className='flex '>
+            <div className="flex flex-1">
                 <form className="flex items-center space-x-1 bg-gray-100 p-2 rounded-md flex-1 mx-2 max-w-96">
-                    <SearchIcon className='h-4 text-gray-500' />
+                    <SearchIcon className="h-4 text-gray-500" />
                     <input
                         type="text"
-                        placeholder='Search...'
-                        className='bg-transparent flex-1 outline-none'
+                        placeholder="Search..."
+                        className="bg-transparent flex-1 outline-none"
                     />
                 </form>
             </div>
-            <div className='flex items-center space-x-4 px-6'>
-                <Link href='/' className='icon'>
-                    <HomeIcon className='h-5' />
+            <div className="flex items-center space-x-4 px-6">
+                <Link href="/" className="icon">
+                    <HomeIcon className="h-5" />
                     <p>Home</p>
                 </Link>
 
-                <Link href='/' className='icon hidden md:flex'>
-                    <UsersIcon className='h-5' />
+                <Link href="/" className="icon hidden md:flex">
+                    <UsersIcon className="h-5" />
                     <p>Network</p>
                 </Link>
 
-                <Link href='/' className='icon hidden md:flex'>
-                    <Briefcase className='h-5' />
+                <Link href="/" className="icon hidden md:flex">
+                    <Briefcase className="h-5" />
                     <p>Jobs</p>
                 </Link>
 
-                <Link href='/' className='icon'>
-                    <MessagesSquare className='h-5' />
+                <Link href="/" className="icon">
+                    <MessagesSquare className="h-5" />
                     <p>Messaging</p>
                 </Link>
 
-                {/* TODO signin button when signed in */}
-                
+                <SignedOut>
+                    <Button asChild variant="secondary" className="hover:shadow-md active:scale-90 duration-150">
+                        <SignInButton>Log In</SignInButton>
+                    </Button>
+                </SignedOut>
 
                 <SignedIn>
                     <UserButton />
                 </SignedIn>
-
-                {/* TODO sign in button when not signed */}
-
-                
-                <SignedOut>
-                    <Button>
-                        <SignInButton />
-                    </Button>
-                </SignedOut>
-
-
             </div>
-
-            <SignedIn>
-                    <UserButton />
-                </SignedIn>
         </div>
-    )
+    );
 }
 
-export default Header 
+export default Header;
