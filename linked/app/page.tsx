@@ -1,9 +1,21 @@
-import Image from "next/image";
+import UserInfo from "@/components/UserInfo";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Hello World</h1>
+    <main className="grid">
+      <section>
+        <UserInfo />
+      </section>
+
+      <section>
+    {/* postForm */}
+    {/* postFeen */}
+
+      </section>
+
+      <section>
+        {/* widget */}
+      </section>
     </main>
   );
 }
