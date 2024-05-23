@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, models, Model} from "mongoose";
+import mongoose, { Schema, Document, models} from "mongoose";
 import { IUser } from "../../types/user";
 
 export interface ICommentBase {

@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, models, Model } from "mongoose";
 import { IUser } from "../../types/user";
-import { Comment, IComment, ICommentBase } from "./comments";
+import { Comment, IComment, ICommentBase } from "./comment";
 import { create } from "domain";
 import { comment } from "postcss";
 
