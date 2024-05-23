@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useUser } from '@clerk/nextjs'
 import { Button } from './ui/button';
 import { ImageIcon, XIcon } from 'lucide-react';
+import createPostAction  from '../actions/createPostAction';
 
 function PostForm() {
     const [preview, setPreview] = useState<string | null>(null)
@@ -20,12 +21,39 @@ function PostForm() {
         }
     }
 
+    const handlePostAction = (formData: FormData) => { 
+        const formDataCopy = formData;
+        ref.current?.reset();
+
+        const text = formDataCopy.get('postInput') as string;
+
+        if(!text.trim()) {
+            throw new Error('Post cannot be empty')
+        }
+
+        setPreview(null);
+
+        try {
+          createPostAction(formDataCopy)
+        } catch (error) {
+            console.error('Error creating post', error)
+        }
+
+        // const image = formDataCopy.get('image') as File;
+    }
+
     console.log('client user: ', user)
 
 
     return (
-        <div>
-            <form ref={ref} action="">
+        <div className='mb-2'>
+            <form 
+            ref={ref} 
+            action={formData => {
+                handlePostAction(formData)
+            }} 
+            className='bg-white rounded-lg p-3'
+            >
                 <div className='flex items-center space-x-2'>
                     <Avatar>
                         <AvatarImage src={user?.imageUrl || "https://github.com/shadcn.png"} />
