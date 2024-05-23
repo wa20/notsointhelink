@@ -4,6 +4,9 @@ import { AddPostRequestBody } from "@/app/api/posts/route";
 import { Post } from "@/mongodb/models/post";
 import { IUser } from "@/types/user";
 import { currentUser } from "@clerk/nextjs/server"
+import { BlobServiceClient } from "@azure/storage-blob";
+import generateSASToken, { containerName } from "@/lib/generateSASToken";
+import { randomUUID } from "crypto";
 
 export default async function createPostAction(formData: FormData) {
 
@@ -21,7 +24,7 @@ export default async function createPostAction(formData: FormData) {
     const image = formData.get('image') as File;
 
     // we use a let below as value could be either a string or undefined
-    let imageUrl: string | undefined
+    let image_url: string | undefined = undefined;
 
 
     // if no post input, throw an error
@@ -41,7 +44,39 @@ export default async function createPostAction(formData: FormData) {
     try {
         if (image.size > 1) {
 
+            console.log('image blob uploaded to Azure Storage: ', image)
             // TODO: upload to storage
+
+            // 1. upload image if it exists to Azure Storage
+            const accountName = process.env.AZURE_STORAGE_NAME;
+            const sasToken = await generateSASToken();
+
+            const blobServiceClient = new BlobServiceClient(
+                `https://${accountName}.blob.core.windows.net${sasToken}`
+            );
+
+            const containerClient = blobServiceClient.getContainerClient(containerName);
+
+            const timestamp = new Date().getTime();
+            const file_name = `${randomUUID()}-${timestamp}.png`
+
+            // this will push data to our container
+            const blockBlobClient = containerClient.getBlockBlobClient(file_name);
+
+            const imageBuffer = await image.arrayBuffer();
+            const res = await blockBlobClient.uploadData(imageBuffer);
+            image_url = res._response.request.url
+
+            console.log('image url uploaded: ', image_url)
+
+            // 2. create a post in the database with the image url
+
+            const body: AddPostRequestBody = {
+                user: userDB,
+                text: postInput,
+                imageUrl: image_url
+            }
+            await Post.create(body)
 
         } else {
 
@@ -53,7 +88,7 @@ export default async function createPostAction(formData: FormData) {
         }
 
     } catch (error: any) {
-        throw new Error('Error creating post', error);
+        throw new Error('Error creating post - actions', error);
     }
     // upload image if there is one
 
