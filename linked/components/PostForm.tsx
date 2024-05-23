@@ -16,12 +16,12 @@ function PostForm() {
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
 
-        if (file) {
-            setPreview(URL.createObjectURL(file));
-        }
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
     }
 
-    const handlePostAction = (formData: FormData) => { 
+    const handlePostAction = async (formData: FormData) => { 
         const formDataCopy = formData;
         ref.current?.reset();
 
@@ -34,7 +34,7 @@ function PostForm() {
         setPreview(null);
 
         try {
-          createPostAction(formDataCopy)
+          await createPostAction(formDataCopy)
         } catch (error) {
             console.error('Error creating post - Post form', error)
         }

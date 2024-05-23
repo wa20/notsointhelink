@@ -29,8 +29,8 @@ async function generateSASToken() {
 
     const permissions = new BlobSASPermissions();
     permissions.write = true;
-    permissions.read = true;
     permissions.create = true;
+    permissions.read = true;
 
     const expiryDate = new Date();
     expiryDate.setMinutes(expiryDate.getMinutes() + 60);

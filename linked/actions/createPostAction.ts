@@ -48,11 +48,10 @@ export default async function createPostAction(formData: FormData) {
             const sasToken = await generateSASToken();
 
             const blobServiceClient = new BlobServiceClient(
-                `https://${accountName}.blob.core.windows.net${sasToken}`
+                `https://${accountName}.blob.core.windows.net?${sasToken}`
             );
 
-            const containerClient =
-                blobServiceClient.getContainerClient(containerName);
+            const containerClient = blobServiceClient.getContainerClient(containerName);
 
             const timestamp = new Date().getTime();
             const file_name = `${randomUUID()}_${timestamp}.png`;
@@ -82,11 +81,7 @@ export default async function createPostAction(formData: FormData) {
             await Post.create(body);
         }
     } catch (error: any) {
-        throw new Error("Error creating post - actions", error);
+        console.error("Error details:", error); // Log the detailed error
+        throw new Error(`Error creating post - actions: ${error.message}`);
     }
-    // upload image if there is one
-
-    //create post in database
-
-    // revalidate the path/homepage so that all the data reloads
 }
