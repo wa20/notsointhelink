@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 
 async function UserInfo() {
     const user = await currentUser();
-    console.log('user', user)
+    // console.log('user', user)
 
     const firstName = user?.firstName
     const lastName = user?.lastName

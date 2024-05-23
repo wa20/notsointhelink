@@ -36,13 +36,13 @@ function PostForm() {
         try {
           createPostAction(formDataCopy)
         } catch (error) {
-            console.error('Error creating post', error)
+            console.error('Error creating post - Post form', error)
         }
 
         // const image = formDataCopy.get('image') as File;
     }
 
-    console.log('client user: ', user)
+    // console.log('client user: ', user)
 
 
     return (

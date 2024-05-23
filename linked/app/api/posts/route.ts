@@ -14,11 +14,10 @@ export interface AddPostRequestBody {
 
 export async function POST(request: Request) {
   auth().protect(); //this protects the route using clerk authentication
+  const { user, text, imageUrl }: AddPostRequestBody = await request.json();
 
   try {
     await connectDB();
-
-    const { user, text, imageUrl }: AddPostRequestBody = await request.json();
 
     const postData: IPostBase = {
       user,
