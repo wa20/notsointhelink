@@ -44,7 +44,7 @@ interface IPostStatics {
 export interface IPostDocument extends IPost, IPostMethods { } // this is for a singular instance of a post
 
 //IPostModel extends Mongoose's Model interface to include IPostDocument, representing the entire collection of posts, including any static methods defined for the model.
-interface IPostModel extends Model<IPostDocument> { } // this is for all the posts
+interface IPostModel extends IPostStatics, Model<IPostDocument> { } // this is for all the posts
 
 
 
@@ -65,9 +65,9 @@ const PostSchema = new Schema<IPostDocument>({
     likes: { type: [String] }
 })
 
- 
+
 PostSchema.methods.likePost = async function (userId: string) {
-   
+
     try {
         await this.updateOne({ $addToSet: { likes: userId } })
     } catch (error) {
@@ -96,7 +96,7 @@ PostSchema.methods.removePost = async function () {
 
 PostSchema.methods.commentOnPost = async function (commentToAdd: ICommentBase) {
     try {
-        const comment = await Comment.create({commentToAdd})
+        const comment = await Comment.create({ commentToAdd })
         this.comments.push(comment._id)
         await this.save()
     } catch (error) {
@@ -110,7 +110,7 @@ PostSchema.methods.getAllComments = async function () {
         // populate() is a Mongoose method that replaces the specified path in the document with the actual document(s) from the Comment collection.
         await this.populate({
             path: 'comments',
-            options: { sort: { createdAt: -1}}, //sort comments by createdAt in descending order (most recent first)  
+            options: { sort: { createdAt: -1 }}, //sort comments by createdAt in descending order (most recent first)  
         })
         return this.comments
 
@@ -122,11 +122,11 @@ PostSchema.methods.getAllComments = async function () {
 PostSchema.statics.getAllPosts = async function () {
     try {
         const posts = await this.find()
-        .sort({ createdAt: -1 }) //sort posts by createdAt in descending order (most recent first)
-        .populate
-        ({
-            path: 'comments',
-            options: { sort: { createdAt: -1 }},
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "comments",
+
+                options: { sort: { createdAt: -1 }},
         }).lean() // lean() converts the Mongoose document to a plain JavaScript object, which is more efficient for read-only operations.
 
         return posts.map((post: IPostDocument) => ({
@@ -134,14 +134,13 @@ PostSchema.statics.getAllPosts = async function () {
             _id: post._id.toString(),
             comments: post.comments?.map((comment: IComment) => ({
                 ...comment,
-                _id: comment._id.toString()
-            })
-        }))
-
+                _id: comment._id.toString(),
+            })),
+        }));
     } catch (error) {
         console.log("error getting posts", error)
     }
-}
+};
 
 
 export const Post = models.Post as IPostModel || mongoose.model<IPostDocument, IPostModel>("Post", PostSchema) // this is for a singular instance of a post
