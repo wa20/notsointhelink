@@ -14,7 +14,7 @@ async function UserInfo() {
 
     
     return (
-        <div className='flex flex-col justify-center items-center bg-white mr-6 rounder-lg border py-4'>
+        <div className='flex flex-col justify-center items-center bg-white mr-6 rounded-lg py-4'>
             <Avatar>
                 {user?.id ? (
                     <AvatarImage src={imageUrl} />
