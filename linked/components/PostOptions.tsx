@@ -55,18 +55,17 @@ function PostOptions({ post }: { post: IPostDocument }) {
             throw new Error('An error occurred while liking or unliking the post')
         }
 
-        const fetchLikesResponse = await fetch(`/api/posts/${post._id}/likes`)
+        const fetchLikesResponse = await fetch(`/api/posts/${post._id}/like`)
         if (!fetchLikesResponse.ok ){
             setLiked(originalLiked);
             setLikes(originalLikes);
-            console.error(fetchLikesResponse)
             throw new Error('An error occurred while fetching likes')
         }
 
 
         const newLikesData = await fetchLikesResponse.json();
 
-        setLikes(newLikesData.likes)
+        setLikes(newLikesData)
 
 
     };
