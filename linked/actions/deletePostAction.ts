@@ -1,3 +1,5 @@
+'use server';
+
 import { Post } from "@/mongodb/models/post";
 import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
