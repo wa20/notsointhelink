@@ -7,6 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { BlobServiceClient } from "@azure/storage-blob";
 import generateSASToken, { containerName } from "@/lib/generateSASToken";
 import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 
 export default async function createPostAction(formData: FormData) {
     // we can use the below auth().protect() example to protect the route, but will not be able to control the error message
@@ -84,4 +85,7 @@ export default async function createPostAction(formData: FormData) {
         console.error("Error details:", error); // Log the detailed error
         throw new Error(`Error creating post - actions: ${error.message}`);
     }
+
+    // this will revalidate the home page and update it with whatever it has cached
+    revalidatePath("/");
 }
