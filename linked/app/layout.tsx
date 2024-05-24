@@ -22,12 +22,15 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col ">
         {/* TODO Toaster */}
         
-        <header className="boder-b sticky top-0 bg-white z-50 shadow-md">
+        <header className="border-b sticky top-0 bg-white z-50 shadow-md">
           <Header/>
         </header>
-        <main className="bg-[#F4F2ED] flex-1 w-full">
+        <div className="bg-[#F4F2ED] flex-1 w-full">
+          <main className="max-w-6xl mx-auto">
           {children}
         </main>
+        </div>
+        
       </body>
     </html> 
     </ClerkProvider>
