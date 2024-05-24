@@ -1,3 +1,5 @@
+'use client'
+
 import { IPostDocument } from "@/mongodb/models/post";
 import { useUser } from "@clerk/nextjs";
 import React, { useRef } from "react";
@@ -25,18 +27,19 @@ function CommentForm({ postId }: { postId: string }) {
 
     try {
         //server action
+        await createCommentActionWithPostId(formDataCopy);
     } catch (error) {
         console.error(`An error occurred while commenting on the post: ${error}`)
     }
   };
 
   return (
-    <div
+    <form
       ref={ref}
       action={(formData) => {
         const promise = handleCommentAction(formData);
       }}
-      className="flex items-center space-z-1"
+      className="flex items-center space-x-1"
     >
       <Avatar>
         <AvatarImage src={user?.imageUrl} />
@@ -56,7 +59,7 @@ function CommentForm({ postId }: { postId: string }) {
           Comment
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
 
