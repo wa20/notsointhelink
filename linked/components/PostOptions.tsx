@@ -6,6 +6,9 @@ import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { MessageCircle, Repeat, Send, ThumbsUpIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { LikePostRequestBody } from '@/app/api/posts/[post_id]/like/route'
+import { UnlikePostRequestBody } from '@/app/api/posts/[post_id]/unlike/route'
+import { set } from 'mongoose'
 
 function PostOptions({ post }: { post: IPostDocument }) {
     const [isCommentsOpen, setIsCommentsOpen] = useState(false)
@@ -19,6 +22,56 @@ function PostOptions({ post }: { post: IPostDocument }) {
             setLiked(true)
         }
     }, [post, user])
+
+
+    const likeOrUnlikePost = async () => {
+        if (!user?.id) {
+            throw new Error('User not authenticated')
+        }
+
+        const originalLikes = likes;
+        const originalLiked = liked;
+
+        const newLikes = liked ? likes?.filter((like) => user.id) : [...(likes ?? []), user.id]
+
+        const body: LikePostRequestBody | UnlikePostRequestBody = {
+            userId: user.id
+        }
+
+        setLiked(!liked);
+        setLikes(newLikes);
+
+        const res = await fetch(`/api/posts/${post._id}/${liked ? 'unlike' : 'like'}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        if (!res.ok) {
+            setLiked(originalLiked);
+            setLikes(originalLikes);
+
+            throw new Error('An error occurred while liking or unliking the post')
+        }
+
+        const fetchLikesResponse = await fetch(`/api/posts/${post._id}/likes`)
+        if (!fetchLikesResponse.ok ){
+            setLiked(originalLiked);
+            setLikes(originalLikes);
+            console.error(fetchLikesResponse)
+            throw new Error('An error occurred while fetching likes')
+        }
+
+
+        const newLikesData = await fetchLikesResponse.json();
+
+        setLikes(newLikesData.likes)
+
+
+    };
+
+
 
 
     return (
@@ -46,11 +99,11 @@ function PostOptions({ post }: { post: IPostDocument }) {
                 </div>
             </div>
 
-            <div>
+            <div className='flex justify-end px-2 border-t'>
                 <Button
                     variant="ghost"
                     className='postButton'
-                    // onClick={likeOrUnlikePost}
+                    onClick={likeOrUnlikePost}
                 >
                     <ThumbsUpIcon size={20} className={cn("mr-1", liked && "text-[#4881c2] fill-[#4881c2]")} />
                     Like
@@ -73,7 +126,7 @@ function PostOptions({ post }: { post: IPostDocument }) {
                 >
                     <Repeat size={20} className="mr-1" />
                     Repost
-                </Button>  
+                </Button>
 
                 <Button
                     variant="ghost"
@@ -81,8 +134,17 @@ function PostOptions({ post }: { post: IPostDocument }) {
                 >
                     <Send size={20} className="mr-1" />
                     Send
-                </Button>  
+                </Button>
             </div>
+
+            {isCommentsOpen && (
+                <div className='p-4'>
+                    {/* {user?.id && <CommentForm postId={postId} />}
+                        <CommentFeed post={post} /> */}
+                </div>
+
+            )}
+
 
 
         </div>
