@@ -29,7 +29,7 @@ function CommentFeed({ post }: { post: IPostDocument }) {
                 <div>
                     <p className="font-semibold">
                         {comment.user.firstName} {comment.user.lastName}
-                        <Badge>{isAuthor && "Author"}</Badge>
+                        {/* <Badge>{isAuthor && "Author"}</Badge> */}
                     </p>
                     <p className="text-xs text-gray-400">
                         @{comment.user.firstName}
@@ -40,7 +40,7 @@ function CommentFeed({ post }: { post: IPostDocument }) {
                 <ReactTimeago date={new Date(comment.createdAt)} />
               </p>
             </div>
-            <p className="mt-3 text-sm">{comment.text} coment text here</p>
+            <p className="mt-3 text-sm">{comment.text}</p>
           </div>
         </div>
       ))}
