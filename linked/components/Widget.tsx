@@ -6,7 +6,7 @@ function Widget() {
             <iframe
                 src="https://c9825f53c9bf4734b0118d770f0dae6c.elf.site"
                 title="Embedded post"
-                className="w-fit 2xl:min-w-[400px] h-full"
+                className="w-fit 2xl:min-w-[400px] h-full overscroll-none"
             >
             </iframe>
         </div>
