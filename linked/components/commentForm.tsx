@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { create } from "domain";
 import createCommentAction from "@/actions/createCommentAction";
+import { toast } from "sonner";
 
 function CommentForm({ postId }: { postId: string }) {
   const { user } = useUser();
@@ -38,6 +39,12 @@ function CommentForm({ postId }: { postId: string }) {
       ref={ref}
       action={(formData) => {
         const promise = handleCommentAction(formData);
+
+        toast.promise(promise, { 
+          loading: "Creating comment...",
+          success: "Comment created",
+          error: "Error creating comment",
+        })
       }}
       className="flex items-center space-x-1"
     >
