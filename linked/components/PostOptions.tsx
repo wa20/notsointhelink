@@ -11,6 +11,7 @@ import { UnlikePostRequestBody } from '@/app/api/posts/[post_id]/unlike/route'
 import { set } from 'mongoose'
 import CommentFeed from './CommentFeed'
 import CommentForm from './commentForm'
+import { toast } from 'sonner'
 
 function PostOptions({ post }: { post: IPostDocument }) {
     const [isCommentsOpen, setIsCommentsOpen] = useState(false)
@@ -53,7 +54,7 @@ function PostOptions({ post }: { post: IPostDocument }) {
         if (!res.ok) {
             setLiked(originalLiked);
             setLikes(originalLikes);
-
+            toast.error('An error occurred while liking or unliking the post') 
             throw new Error('An error occurred while liking or unliking the post')
         }
 
@@ -104,7 +105,15 @@ function PostOptions({ post }: { post: IPostDocument }) {
                 <Button
                     variant="ghost"
                     className='postButton'
-                    onClick={likeOrUnlikePost}
+                    onClick={() => {
+                        const promise = likeOrUnlikePost()
+                    
+                        toast.promise(promise, {
+                            loading: 'Liking post...',
+                            success: liked ? 'Unliked post' : 'Liked post',
+                            error: 'Error liking post'
+                        })
+                        }}
                 >
                     <ThumbsUpIcon size={20} className={cn("mr-1", liked && "text-[#4881c2] fill-[#4881c2]")} />
                     Like
@@ -146,7 +155,7 @@ function PostOptions({ post }: { post: IPostDocument }) {
                     {/* second method is using clerks SignedIn component */}
 
                     <SignedIn>
-                        <CommentForm postId={post._id} />
+                        <CommentForm postId={post._id.toString()} />
                         
                     </SignedIn>
 

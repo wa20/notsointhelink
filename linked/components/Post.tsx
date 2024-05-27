@@ -11,6 +11,7 @@ import { Trash2 } from "lucide-react";
 import deletePostAction from "@/actions/deletePostAction";
 import Image from "next/image";
 import PostOptions from "./PostOptions";
+import { toast } from "sonner";
 
 function Post({ post }: { post: IPostDocument }) {
   const { user } = useUser();
@@ -54,7 +55,12 @@ function Post({ post }: { post: IPostDocument }) {
               variant="secondary"
               onClick={() => {
                 const promise = deletePostAction(post._id.toString())
-                // TODO add toast
+                
+                toast.promise(promise, { 
+                  loading: "Deleting post...",
+                  success: "Post deleted",
+                  error: "Error deleting post",
+                })
               }}
             >
               <Trash2 size={20} />
